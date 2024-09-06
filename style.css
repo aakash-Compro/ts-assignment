@@ -1,0 +1,238 @@
+:root {
+    --bg-main: #ffffff;
+    --bg-primary: #18122B;
+    --text-color: #000000;
+    --text-light: #FFFFFF;
+}
+
+body.dark-mode {
+    --bg-main: #18122B;
+    --bg-primary: #ECF2FF;
+    --text-color: var(--text-light);
+}
+
+body{
+    background-color: var(--bg-main);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+input.form-control {
+    background-color:var(--bg-main);
+    color: black;
+    width: 20%;
+}
+
+.dark-mode input.form-control {
+    background-color: var(--bg-main);
+    color: white;
+}
+
+
+.inside-container {
+    display: flex;
+    flex-direction: row;
+}
+
+h3,label,table th, table td, ul.list-group li {
+    color: var(--text-color);
+}
+
+.toggle-label {
+    width: 50px;
+    height: 25px;
+    background-color: var(--bg-primary);
+    display: inline-block;
+    position: relative;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+
+.btn-disabled{
+    cursor:not-allowed;
+    opacity: 0.5;
+}
+
+
+.sort-icon {
+    cursor: pointer;
+    margin-left: 5px;
+    margin-top: 2px;
+    transition: color 0.4s ease;
+}
+
+#checkbox {
+    display: none;
+}
+
+.toggle-ball {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: var(--bg-main);
+    position: absolute;
+    top: 2.5px;
+    left: 2.5px;
+    transition: transform 0.3s ease;
+}
+
+.toggle-btn{
+    margin-top: 5px;
+}
+
+button{
+    background-color: rgb(63, 91, 236);
+}
+
+.btn-secondary{
+    background-color: rgb(63, 91, 236);
+}
+
+.btn-secondary{
+    height: 40px;
+}
+
+#book-coverup{
+    height: 250px;
+    width: 300px;
+}
+
+#checkbox:checked + .toggle-label .toggle-ball {
+    transform: translateX(25px);
+}
+
+.navbar{
+    background-color: var(--bg-primary);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.table th, .table td{
+    border-color: var(--text-color);
+    color: var(--text-color);
+}
+
+.examined-book{
+    display: flex;
+}
+
+.list-group{
+    width: 100%;
+}
+
+.footer{
+    display: flex;
+}
+
+.list-group-item {
+    background-color: var(--bg-main);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+
+.loader{
+    position:fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f7f9fb;
+    transition: opacity 2.5s, visibility 2.5s;
+}
+
+.loader-hidden{
+    opacity: 0;
+    visibility: hidden;
+}
+
+.loader::after{
+    content: "";
+    width: 75px;
+    height: 75px;
+    border: 15px solid #dddddd;
+    border-top-color: #7449f5;
+    border-radius: 50%;
+    animation: loading 2.5s ease infinite;
+}
+
+@keyframes loading{
+    from{
+        transform: rotate(0turn);
+    }
+    to{
+        transform: rotate(1turn);
+    }
+}
+
+
+.main-heading{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.search-results {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    width: 14.8%;
+    z-index: 1000;
+    max-height: 150px;
+    overflow-y: auto;
+    color: black;
+}
+
+
+.dark-mode .search-results {
+    background: #333;
+    border: 1px solid #555;
+    color: white;
+}
+
+.dark-mode .result-item:hover {
+    background: rgb(4, 4, 4);
+}
+
+.result-item {
+    padding: 5px;
+    cursor: pointer;
+}
+
+.result-item:hover {
+    background-color: #f0f0f0;
+}
+
+.table-scroll {
+    overflow-x: auto;
+}
+
+.table-scroll table {
+    width: 100%;
+    min-width: 600px; 
+}
+
+@media screen and (max-width: 576px) {
+    .examined-book {
+        flex-direction: column;
+    }
+    .search-results{
+        width: 45%;
+    }
+    .input-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    input.form-control {
+        width: 48%;
+        margin-bottom: 10px; 
+    }
+    #btn-search {
+        margin-top: 10px;
+    }
+}
