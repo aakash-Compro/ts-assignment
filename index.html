@@ -1,0 +1,103 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <title>Book Catalog</title>
+    </head>
+    <body>
+        <div id="div-search" class="container" style="margin-bottom:20px; padding-top:20px;">
+            <div class="main-heading">
+                <h3>Search Books</h3>
+                <div class="toggle-btn">
+                    <input type="checkbox" id="checkbox" />
+                    <label for="checkbox" class="toggle-label">
+                        <span class="toggle-ball"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="inside-container">
+                <form action="#">
+                    <input type="text" id="input-search-id" class="form-control" style="display:inline;" placeholder="Book Id" autocomplete="off">
+                    <div id="result-id" class="search-results" style="display:none;"></div>
+                    <input type="text" id="input-search-genre" class="form-control" style="display:inline;" placeholder="Genre">
+                    <input type="text" id="input-search-price-min" class="form-control" style="display:inline;" placeholder="Price Min">
+                    <input type="text" id="input-search-price-max" class="form-control" style="display:inline;" placeholder="Price Max">
+                    <input type="text" id="input-search-author" class="form-control" style="display:inline;" placeholder="Author">
+                    <div id="result-author" class="search-results" style="display:none;"></div>
+                    <input type="text" id="input-search-year" class="form-control" style="display:inline;" placeholder="Publication Year">
+                    <button id="btn-search" class="btn" type="submit" onclick="handleSearch()" style="color: white;">Search</button>
+                </form>
+            </div>
+        </div>
+        <div id="examined-book" class="container" style="margin-bottom:20px">
+            <h3>Examined Book</h3>
+            <div class="examined-book">
+                <img id="book-coverup" src="./asset/empty_book.jpeg" alt="empty-book-coverup"/>
+                <ul id="list-examined-book" class="list-group">
+                    <li class="list-group-item">Book Id: <span id="book-id"></span></li>
+                    <li class="list-group-item">Price: <span id="book-price"></span></li>
+                    <li class="list-group-item">Genre: <span id="book-genre"></span></li>
+                    <li class="list-group-item">Author: <span id="book-author"></span></li>
+                    <li class="list-group-item">Publication Year: <span id="book-year"></span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container similar-books" style="margin-bottom:20px">
+            <h3>List of Similar Books</h3>
+            <div class="table-scroll">
+                <table id="table-similar-books" class="table">
+                    <thead>
+                        <tr>
+                            <th>BookImages</th>
+                            <th>Genre</th>
+                            <th onclick="sortingdata('price','similardatatable')">Price<span><i class="fa-solid fa-sort sort-icon"></i></span></th>
+                            <th>Author</th>
+                            <th onclick="sortingdata('year','similardatatable')">Publication Year<span><i class="fa-solid fa-sort sort-icon"></i></span></th>
+                            <th>Book Name</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="container" style="margin-bottom:20px">
+            <h3>List of All Books</h3>
+            <div class="table-scroll">
+                <table id="table-all-books" class="table">
+                    <thead>
+                        <tr>
+                            <th>BookImage</th>
+                            <th>BookName</th>
+                            <th onclick="sortingdata('price','alldatatable')">Price<span><i class="fa-solid fa-sort sort-icon"></i></span></th>
+                            <th>Genre</th>
+                            <th onclick="sortingdata('year','alldatatable')">Publication Year<span><i class="fa-solid fa-sort sort-icon"></i></span></th>
+                            <th>Author</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <nav aria-label="Page navigation" class="footer">
+                <ul class="pagination">
+                </ul>                      
+                <div class="btn-group dropup" style="margin-left:6px;">
+                    <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Pages
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#" data-value="10">10/Pages</a>
+                        <a class="dropdown-item" href="#" data-value="20">20/Pages</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="loader"></div>
+        <script src="dest/script.js" defer></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
