@@ -8,72 +8,103 @@ interface Book{
     bookName: string;
 }
 
-let bookId = document.getElementById('input-search-id') as HTMLInputElement;
-let genre = document.getElementById('input-search-genre') as HTMLInputElement;
-let priceMin = document.getElementById('input-search-price-min') as HTMLInputElement;
-let priceMax = document.getElementById('input-search-price-max') as HTMLInputElement;
-let author = document.getElementById('input-search-author') as HTMLInputElement;
-let publicationYear = document.getElementById('input-search-year') as HTMLInputElement;
-let similarBook = document.querySelector('.similar-books') as HTMLElement;
-let searchBookId = document.getElementById('book-id') as HTMLSpanElement;
-let searchPrice = document.getElementById('book-price') as HTMLSpanElement;
-let searchGenre = document.getElementById('book-genre') as HTMLSpanElement;
-let searchAuthor = document.getElementById('book-author') as HTMLSpanElement;
-let searchPublicationYear = document.getElementById('book-year') as HTMLSpanElement;
-let examinedThumbnail = document.getElementById('book-coverup') as HTMLImageElement;
+const bookId = document.getElementById('input-search-id') as HTMLInputElement;
+const genre = document.getElementById('input-search-genre') as HTMLInputElement;
+const priceMin = document.getElementById('input-search-price-min') as HTMLInputElement;
+const priceMax = document.getElementById('input-search-price-max') as HTMLInputElement;
+const author = document.getElementById('input-search-author') as HTMLInputElement;
+const publicationYear = document.getElementById('input-search-year') as HTMLInputElement;
+const similarBook = document.querySelector('.similar-books') as HTMLElement;
+const searchBookId = document.getElementById('book-id') as HTMLSpanElement;
+const searchPrice = document.getElementById('book-price') as HTMLSpanElement;
+const searchGenre = document.getElementById('book-genre') as HTMLSpanElement;
+const searchAuthor = document.getElementById('book-author') as HTMLSpanElement;
+const searchPublicationYear = document.getElementById('book-year') as HTMLSpanElement;
+const examinedThumbnail = document.getElementById('book-coverup') as HTMLImageElement;
 let defaultCoverUp = './asset/empty_book.jpeg';
-let api_Url = 'https://assignment-test-data-101.s3.ap-south-1.amazonaws.com/books-v2.json';
-let arr_data: Book[] = [];
+const api_Url = 'https://assignment-test-data-101.s3.ap-south-1.amazonaws.com/books-v2.json';
+let total_book_arr: Book[] = [];
 let  similarbook_data: Book[] = [];
 let currentPage: number = 1;
 let rowsPage: number = 10;
 let upper: boolean = true;
-let similarTable = document.querySelector('#table-similar-books tbody') as HTMLElement;
-let resultIdContainer = document.getElementById('result-id') as HTMLElement;
-let resultAuthorContainer = document.getElementById('result-author') as HTMLElement;
-let dropDown=document.querySelectorAll<HTMLAnchorElement>('.dropdown-item');
+const similarTable = document.querySelector('#table-similar-books tbody') as HTMLElement;
+const resultIdContainer = document.getElementById('result-id') as HTMLElement;
+const resultAuthorContainer = document.getElementById('result-author') as HTMLElement;
+const dropDown=document.querySelectorAll<HTMLAnchorElement>('.dropdown-item');
 
 const checkbox = document.getElementById('checkbox') as HTMLElement;
+
+/** 
+Handler: Change event
+Functionality: Toggles the 'dark-mode' class on the document body to switch between dark and light modes.
+*/
 checkbox.addEventListener('change', function() {
-    document.body.classList.toggle('dark-mode');
+  document.body.classList.toggle('dark-mode');
 });
 
-bookId.addEventListener('input',function(){
-    const query:string=bookId.value.toLowerCase();
-    const results:Book[]=arr_data.filter((book)=> book.bookId.toLowerCase().includes(query));
-    displayResults('result-id',results,'id');
+/**
+Handler: Input event
+Functionality: Filters the total book array based on the book ID input value and displays the matching results in the 'result-id' container.
+*/
+bookId.addEventListener('input', function() {
+  const query: string = bookId.value.toLowerCase();
+  const results: Book[] = total_book_arr.filter((book) => book.bookId.toLowerCase().includes(query));
+  displayResults('result-id', results, 'id');
 });
 
+/**
+Handler: Input event
+Functionality: Filters the total book array based on the author input value and displays the matching results in the 'result-author' container.
+*/
 author.addEventListener('input', function() {
-    const query=author.value.toLowerCase();
-    const results = arr_data.filter(book => book.author.toLowerCase().includes(query));
-    displayResults('result-author', results, 'author');
+  const query = author.value.toLowerCase();
+  const results = total_book_arr.filter(book => book.author.toLowerCase().includes(query));
+  displayResults('result-author', results, 'author');
 });
 
+/** 
+Handler: Click event
+Functionality: Hides the result containers for book ID and author if a click is detected outside of the form controls.
+*/
 document.addEventListener('click', function(event: MouseEvent) {
-    const targetElement = event.target as HTMLElement;
-    if (!targetElement.closest('.form-cmontrol')) {
-        const resultIdElement = document.getElementById('result-id');
-        const resultAuthorElement = document.getElementById('result-author');
-        if (resultIdElement) {
-            resultIdElement.style.display = 'none';
-        }
-        if (resultAuthorElement) {
-            resultAuthorElement.style.display = 'none';
-        }
-    }
+  const targetElement = event.target as HTMLElement;
+  if (!targetElement.closest('.form-cmontrol')) {
+      const resultIdElement = document.getElementById('result-id');
+      const resultAuthorElement = document.getElementById('result-author');
+      if (resultIdElement) {
+          resultIdElement.style.display = 'none';
+      }
+      if (resultAuthorElement) {
+          resultAuthorElement.style.display = 'none';
+      }
+  }
 });
 
+/**
+Handler: Focus event
+Functionality: Hides the book ID result container when the author input field receives focus.
+*/
 author.addEventListener('focus', function() {
-    resultIdContainer.style.display = 'none';
+  resultIdContainer.style.display = 'none';
 });
-  
+
+/**
+Handler: Focus event
+Functionality: Hides the author result container when the book ID input field receives focus.
+*/
 bookId.addEventListener('focus', function() {
-    resultAuthorContainer.style.display = 'none';
+  resultAuthorContainer.style.display = 'none';
 });
 
 
-function displayResults(containerId:string,results:Book[],type:string):void{
+/**
+ * Displays search results in a specified container.
+ * This function clears the container, then populates it with result items based on the provided type.
+ * Each result item is clickable, and clicking it will set the value of the associated input field 
+ * to the item's text content, and hide the container.
+ */
+function displayResults(containerId:string ,results:Book[] ,type:string ):void {
     let container=document.getElementById(containerId) as HTMLElement;
     container.innerHTML='';
     if(results.length>0){
@@ -97,7 +128,18 @@ function displayResults(containerId:string,results:Book[],type:string):void{
     }
 }
 
-function sortingdata(categorytype:string,tabletype:string):void{
+/**
+ * Sorts and updates the data displayed in tables based on the selected category and sort order.
+ * 
+ * categorytype - The category to sort by, either 'price' or 'year'.
+ * tabletype - The type of table to update, either 'similardatatable' or 'alldatatable'.
+ * 
+ * This function sorts the `similarbook_data` or `total_book_arr` arrays based on the specified category 
+ * and sort order (ascending or descending). It then updates the corresponding table by clearing the 
+ * current contents and appending the sorted data. The `upper` flag toggles the sort order between 
+ * ascending and descending.
+ */
+function sortingdata(categorytype:string,tabletype:string):void {
     if(tabletype==='similardatatable'){
       if(categorytype==='price'){
         if(upper){
@@ -162,18 +204,18 @@ function sortingdata(categorytype:string,tabletype:string):void{
     else if(tabletype==='alldatatable'){
       if(categorytype==='price'){
         if(upper){
-          arr_data.sort((a,b)=>a.price-b.price);
+          total_book_arr.sort((a,b)=>a.price-b.price);
         }
         else{
-          arr_data.sort((a,b)=>b.price-a.price);
+          total_book_arr.sort((a,b)=>b.price-a.price);
         }
       }
       else if(categorytype==='year'){
         if(upper){
-          arr_data.sort((a,b)=>(a.publicationYear as number)-(b.publicationYear as number));
+          total_book_arr.sort((a,b)=>(a.publicationYear as number)-(b.publicationYear as number));
         }
         else{
-          arr_data.sort((a,b)=>(b.publicationYear as number)-(a.publicationYear as number));
+          total_book_arr.sort((a,b)=>(b.publicationYear as number)-(a.publicationYear as number));
         }
       }
       upper=!upper;
@@ -181,10 +223,15 @@ function sortingdata(categorytype:string,tabletype:string):void{
     }
 }
 
-function lazyLoadImages():void{
+/**
+ * Implements lazy loading for images with the class 'lazy-img' using the IntersectionObserver API.
+ * Images are loaded when they come into view (based on threshold).
+ * Updates the image's `src` attribute from `data-src` when the image is intersecting.
+ */
+function lazyLoadImages():void {
     let lazyImages=document.querySelectorAll('img.lazy-img');
     if ('IntersectionObserver' in window) {
-      const observer=new IntersectionObserver((entries,observer)=>{
+      const observer=new IntersectionObserver((entries)=>{
         entries.forEach((entry)=>{
           if(entry.isIntersecting){
             let img = entry.target as HTMLImageElement;
@@ -228,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function() {
     checkInputs();
 });
 
-window.addEventListener("load",()=>{
+window.addEventListener("load",function() {
     const loader=document.querySelector(".loader") as HTMLElement;
     loader.classList.add("loader-hidden");
     loader.addEventListener("transitionend",()=>{
@@ -236,82 +283,102 @@ window.addEventListener("load",()=>{
     })
 })
 
-function similarBooksDetails(similardata:Book):void{  
-    let similargenerebooks:Book[]=arr_data.filter((ele) =>
-        ele.bookId !== similardata?.bookId &&
-        ele.genre.toLowerCase() === similardata?.genre.toLowerCase()
-    );
-  
-    let similarPricedBooks:Book[]=arr_data.filter((book) =>
-        book.bookId !== similardata?.bookId &&
-        book.price >= similardata?.price * 0.9 &&
-        book.price <= similardata?.price * 1.1
-    );
-  
-    let duplicateIds:Set<string>=new Set(
+/**
+ * Finds books similar to the given book based on genre and price range and return array of similar Book.
+ */
+function findSimilarBooks(similardata: Book): Book[] {
+  let similargenerebooks: Book[] = total_book_arr.filter((ele) =>
+      ele.bookId !== similardata?.bookId &&
+      ele.genre.toLowerCase() === similardata?.genre.toLowerCase()
+  );
+
+  let similarPricedBooks: Book[] = total_book_arr.filter((book) =>
+      book.bookId !== similardata?.bookId &&
+      book.price >= similardata?.price * 0.9 &&
+      book.price <= similardata?.price * 1.1
+  );
+
+  let duplicateIds: Set<string> = new Set(
       similargenerebooks
-        .filter((book) => similarPricedBooks.some((b) => b?.bookId === book.bookId))
-        .map((book) => book.bookId)
-    );
-  
-    let combinedArray:Book[]=[
+          .filter((book) => similarPricedBooks.some((b) => b?.bookId === book.bookId))
+          .map((book) => book.bookId)
+  );
+
+  let combinedArray: Book[] = [
       ...similargenerebooks.filter((book) => !duplicateIds.has(book.bookId)),
       ...similarPricedBooks.filter((book) => !duplicateIds.has(book.bookId)),
-    ];
-  
-    similarbook_data=[...combinedArray];
-    similarTable.innerHTML='';
-  
-    combinedArray.slice(0, 10).forEach((book) => {
-      let coverbookImage;
-      if(book.coverImage){
-        coverbookImage=book.coverImage;
-      }
-      else{
-        coverbookImage=defaultCoverUp;
-      }
-      const rowEntry=document.createElement('tr')as HTMLTableRowElement;
-      let imgtd=document.createElement('td') as HTMLTableCellElement;
-      let img=document.createElement('img') as HTMLImageElement;
-      img.alt=book.bookName;
-      img.setAttribute('data-src',coverbookImage);
-      img.classList.add('lazy-img');
-      img.style.width='50px';
-      img.style.height='50px';
-      img.style.objectFit='contain';
-      imgtd.appendChild(img);
-      rowEntry.appendChild(imgtd);
-  
-      let genretd=document.createElement('td') as HTMLTableCellElement;
-      genretd.innerHTML=book.genre;
-      rowEntry.appendChild(genretd);
-  
-      let pricetd=document.createElement('td') as HTMLTableCellElement;
-      pricetd.innerHTML=`$ ${book.price}`;
-      rowEntry.appendChild(pricetd);
-  
-      let authorTd=document.createElement('td') as HTMLTableCellElement;
-      authorTd.innerHTML=book.author;
-      rowEntry.appendChild(authorTd);
-  
-      let publicyearTd=document.createElement('td') as HTMLTableCellElement;
-      publicyearTd.innerHTML=book.publicationYear as string;
-      rowEntry.appendChild(publicyearTd);
-  
-      let bookNameTd=document.createElement('td') as HTMLTableCellElement;
-      bookNameTd.innerHTML=book.bookName;
-      rowEntry.appendChild(bookNameTd);
-  
-      similarTable.appendChild(rowEntry);
-    });
-    lazyLoadImages();
+  ];
+
+  return combinedArray;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+/**
+ * Displays details of books similar to the given book in a table format.
+ */
+function similarBooksDetails(similardata: Book): void {
+  const combinedArray: Book[] = findSimilarBooks(similardata);
+
+  similarbook_data = [...combinedArray];
+  similarTable.innerHTML = '';
+
+  combinedArray.slice(0, 10).forEach((book) => {
+      let coverbookImage = book.coverImage ? book.coverImage : defaultCoverUp;
+
+      const rowEntry = document.createElement('tr') as HTMLTableRowElement;
+
+      const imgtd = document.createElement('td') as HTMLTableCellElement;
+      const img = document.createElement('img') as HTMLImageElement;
+      img.alt = book.bookName;
+      img.setAttribute('data-src', coverbookImage);
+      img.classList.add('lazy-img');
+      img.style.width = '50px';
+      img.style.height = '50px';
+      img.style.objectFit = 'contain';
+      imgtd.appendChild(img);
+      rowEntry.appendChild(imgtd);
+
+      const genretd = document.createElement('td') as HTMLTableCellElement;
+      genretd.innerHTML = book.genre;
+      rowEntry.appendChild(genretd);
+
+      const pricetd = document.createElement('td') as HTMLTableCellElement;
+      pricetd.innerHTML = `$ ${book.price}`;
+      rowEntry.appendChild(pricetd);
+
+      const authorTd = document.createElement('td') as HTMLTableCellElement;
+      authorTd.innerHTML = book.author;
+      rowEntry.appendChild(authorTd);
+
+      const publicyearTd = document.createElement('td') as HTMLTableCellElement;
+      publicyearTd.innerHTML = book.publicationYear as string;
+      rowEntry.appendChild(publicyearTd);
+
+      const bookNameTd = document.createElement('td') as HTMLTableCellElement;
+      bookNameTd.innerHTML = book.bookName;
+      rowEntry.appendChild(bookNameTd);
+
+      similarTable.appendChild(rowEntry);
+  });
+
+  lazyLoadImages();
+}
+/**
+Handler: DOMContentLoaded event
+Functionality: Calls the `lazyLoadImages` function once the initial HTML document has been completely loaded and parsed. This ensures that any images with lazy-loading attributes are processed as soon as the DOM is ready.
+*/
+document.addEventListener('DOMContentLoaded', function() {
     lazyLoadImages();
 });
 
-function examinedBookDeatils(filterDatarr:Book[]):void{
+/**
+ * Updates the UI with details of a specific book from the filtered data.
+ * If no filtered data is available, it displays 'No Data Found' in the corresponding fields.
+ * If filtered data exists, the function selects a book based on the filter conditions (price range) 
+ * and updates the book ID, price, genre, author, publication year, and cover image.
+ * Additionally, it hides or displays similar books based on the filter results.
+ * Calls `similarBooksDetails` to display the details of similar books.
+ */ 
+function examinedBookDeatils(filterDatarr:Book[]):void {
     if(filterDatarr.length===0){
         examinedThumbnail.src=defaultCoverUp;
         searchBookId.innerHTML='<b>No Data found!!!!</b>';
@@ -352,80 +419,96 @@ function examinedBookDeatils(filterDatarr:Book[]):void{
     similarBooksDetails(filterDatarr[0]);
 }
 
-function filterData(val:string|number,filterType:string,currentData:Book[]):Book[]{
-    const lowerVal= typeof val==='string'?val.toLowerCase():val;
-    const getExactMatches=(key: keyof Book)=>currentData.filter((book)=>{
-        return typeof book[key] === 'string' && book[key].toLowerCase() === lowerVal;
-    });
-    const getStartsWithMatches=(key:keyof Book)=>currentData.filter((book)=>{
-        return typeof book[key]==='string'&& book[key].toLowerCase().startsWith(lowerVal as string);
-    });
-    const includesMatches=(key: keyof Book)=>currentData.filter((book)=>{
-        return typeof book[key]==='string' && book[key].toLowerCase().includes(lowerVal as string);
-    }); 
+/** get FilteredFunctions will return 3 function getExactMatches,getStartsWithMatches and includesMatches.
+*/
+function getFilterFunctions(val: string | number, currentData: Book[]) {
+  const lowerVal = typeof val === 'string' ? val.toLowerCase() : val;
 
-    if(filterType === 'bookId') {
-      const exactMatches:Book[]=getExactMatches('bookId');
+  function getExactMatches(key: keyof Book):Book[] {
+    return currentData.filter((book) => {
+      return typeof book[key] === 'string' && book[key].toLowerCase() === lowerVal})
+  };
+
+  function getStartsWithMatches(key: keyof Book):Book[] {
+    return currentData.filter((book) => {
+      return typeof book[key] === 'string' && book[key].toLowerCase().startsWith(lowerVal as string)})
+  };
+
+  function includesMatches(key: keyof Book):Book[] {
+    return currentData.filter((book) => {
+      return typeof book[key] === 'string' && book[key].toLowerCase().includes(lowerVal as string)})
+  };
+
+  return { getExactMatches, getStartsWithMatches, includesMatches };
+}
+/** 
+Filters the provided book data based on the given filter type and value.
+Utilizes different matching strategies (exact, starts with, includes) based on the filter type.
+*/
+function filterData(val: string | number, filterType: string, currentData: Book[]): Book[] {
+  const { getExactMatches, getStartsWithMatches, includesMatches } = getFilterFunctions(val, currentData);
+
+  if (filterType === 'bookId') {
+      const exactMatches = getExactMatches('bookId');
       if (exactMatches.length > 0) {
-        console.log("aakki1", exactMatches);
-        return exactMatches;
+          return exactMatches;
       }
-      const startsWithMatches:Book[]=getStartsWithMatches('bookId');
+      const startsWithMatches = getStartsWithMatches('bookId');
       if (startsWithMatches.length > 0) {
-        return startsWithMatches;
+          return startsWithMatches;
       }
-      const includesMatchesdata:Book[]=includesMatches('bookId');
-      if (includesMatchesdata.length > 0) {
-        return includesMatchesdata;
+      const includesMatchesData = includesMatches('bookId');
+      if (includesMatchesData.length > 0) {
+          return includesMatchesData;
       }
-    }
-    else if (filterType === 'genre') {
-      const exactMatches:Book[]=getExactMatches('genre');
-      if (exactMatches.length>0){
-        console.log("aakki2", exactMatches);
-        return exactMatches;
+  }
+  else if (filterType === 'genre') {
+      const exactMatches = getExactMatches('genre');
+      if (exactMatches.length > 0) {
+          return exactMatches;
       }
-      const startsWithMatches:Book[]=getStartsWithMatches('genre');
+      const startsWithMatches = getStartsWithMatches('genre');
       if (startsWithMatches.length > 0) {
-        return startsWithMatches;
+          return startsWithMatches;
       }
-    }
-    else if (filterType==='priceMin'){
-        let pricemin:Book[]=currentData.filter((book)=>book.price>=(val as number));
-        console.log("price-Min",pricemin);
-        return pricemin; 
-    }
-    else if (filterType==='priceMax'){
-        let pricemax:Book[]=currentData.filter((book) => book.price <= (val as number));
-        console.log("price-Max",pricemax);
-        return pricemax;
-    }
-    else if (filterType === 'author') {
+  }
+  else if (filterType === 'priceMin') {
+      let priceMin = currentData.filter((book) => book.price >= (val as number));
+      return priceMin;
+  }
+  else if (filterType === 'priceMax') {
+      let priceMax = currentData.filter((book) => book.price <= (val as number));
+      return priceMax;
+  }
+  else if (filterType === 'author') {
       const exactMatches = getExactMatches('author');
       if (exactMatches.length > 0) {
-        console.log("aakki3", exactMatches);
-        return exactMatches;
+          return exactMatches;
       }
       const startsWithMatches = getStartsWithMatches('author');
       if (startsWithMatches.length > 0) {
-        console.log("aakki3",startsWithMatches);
-        return startsWithMatches;
+          return startsWithMatches;
       }
-      const includesMatchesdata=includesMatches('author');
-      if (includesMatchesdata.length > 0) {
-        return includesMatchesdata;
+      const includesMatchesData = includesMatches('author');
+      if (includesMatchesData.length > 0) {
+          return includesMatchesData;
       }
-    } 
-    else if (filterType === 'publicationYear') {
-      let publicyear=currentData.filter((book) => book.publicationYear.toString() === val);
-      console.log("Year",publicyear);
-      return publicyear;
-    }
-    return [];
-};
+  }
+  else if (filterType === 'publicationYear') {
+      let publicationYear = currentData.filter((book) => book.publicationYear.toString() === val);
+      return publicationYear;
+  }
+  return [];
+}
 
-function handleSearch():void{
-    let filteredData:Book[] = arr_data;
+/**
+ * Handles the book search functionality by applying multiple filters (book ID, genre, price range, author, and publication year).
+ * Filters the `total_book_arr` based on user inputs, and sorts the filtered data by price if any filters are applied.
+ * If filters are present, it displays similar books and passes the filtered data to `examinedBookDetails`.
+ * If no filters are applied, it clears the displayed results.
+ */
+function handleSearch():void {
+    let filteredData:Book[] = total_book_arr;
   
     const filters=[
       { value: bookId.value, type: 'bookId' },
@@ -453,18 +536,26 @@ function handleSearch():void{
     }   
 }
 
-function paginateData(page:number):Book[]{
+/**
+ * Returns a subset of book data for the given page number based on the pagination settings.
+ */
+function paginateData(page:number):Book[] {
     const start:number=(page-1)*rowsPage;
     const end:number=start+rowsPage;
-    return arr_data.slice(start, end);
+    return total_book_arr.slice(start, end);
 };
 
+/**
+ * Renders the pagination component dynamically based on the total number of pages.
+ * Highlights the current page and allows navigation by clicking on page numbers or 'Prev'/'Next'.
+ * Re-renders the book table when a page is selected.
+ */
 function renderPagination(totalPages:number):void {
     const paginationElement = document.querySelector('.pagination') as HTMLUListElement;
     paginationElement.innerHTML = '';
 
-    const createPageItem=(page:number, text:string|number) => {
-      const li=document.createElement('li');
+    function createPageItem(page:number, text:string|number){
+      const li = document.createElement('li');
       li.classList.add('page-item');
       li.innerHTML = `<a class="page-link" href="#">${text}</a>`;
       if (page === currentPage) {
@@ -476,7 +567,7 @@ function renderPagination(totalPages:number):void {
           currentPage = page;
           const tableBody = document.querySelector<HTMLTableSectionElement>('#table-all-books tbody');
             if (tableBody) {
-                tableBody.innerHTML = '';
+              tableBody.innerHTML = '';
             }
           allbooks();
         }
@@ -501,22 +592,24 @@ function renderPagination(totalPages:number):void {
     paginationElement.appendChild(createPageItem(currentPage + 1, 'Next'));
 }  
 
+/**
+ * Renders a table of book data with pagination.
+ * Creates rows dynamically with book details (image, name, price, genre, year, author).
+ * Utilizes lazy loading for book images and updates pagination based on the total data.
+ */
 function allbooks(): void {
     const bookstable = document.querySelector('#table-all-books tbody') as HTMLElement;
     bookstable.innerHTML = '';
 
-    let tableData = paginateData(currentPage);
+    const tableData = paginateData(currentPage);
     tableData.forEach((ele) => {
       let bookImage: string;
-      console.log(ele.coverImage);
-      
       if (ele.coverImage) {
         bookImage = ele.coverImage;
       }
       else {
-        bookImage=defaultCoverUp;
+        bookImage = defaultCoverUp;
       }
-  
       const newrow = document.createElement('tr');
       const imgTd = document.createElement('td');
       const img = document.createElement('img');
@@ -552,7 +645,7 @@ function allbooks(): void {
       bookstable.appendChild(newrow);
     });
     lazyLoadImages();
-    const totalPages = Math.ceil(arr_data.length / rowsPage);
+    const totalPages = Math.ceil(total_book_arr.length / rowsPage);
     renderPagination(totalPages);
 }
 
@@ -567,11 +660,15 @@ dropDown.forEach((item) => {
     });
 });
    
-function dataBook():Promise<Book[] | null>{
+/**
+ * Fetches book data from localStorage if available, otherwise retrieves it from an API.
+ * Stores the fetched API data in localStorage and handles errors.
+ */
+function dataBook():Promise<Book[] | null> {
   const localData=localStorage.getItem('Data');
   if(localData){
     const data=JSON.parse(localData);
-    arr_data=data;
+    total_book_arr=data;
     return Promise.resolve(data);
   }
   return fetch(api_Url)
@@ -583,7 +680,7 @@ function dataBook():Promise<Book[] | null>{
     })
     .then((ele)=>{
         localStorage.setItem('Data',JSON.stringify(ele));
-        arr_data=ele;
+        total_book_arr=ele;
         return ele;
     })
     .catch((err)=>{
@@ -592,6 +689,9 @@ function dataBook():Promise<Book[] | null>{
     });
 }
 
-dataBook().then((ele:Book[] | null)=>{
-    console.log("Aakash",ele);
-}).then(allbooks);
+// Calling the dataBook function to fetch book data, either from localStorage or an API.
+dataBook().then((ele: Book[] | null) => {
+  console.log("Data from LocalStorage:", ele);
+})
+// After retrieving the data, this calls the allbooks function to perform further actions with the book data.
+.then(allbooks);
