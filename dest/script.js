@@ -222,6 +222,10 @@ function lazyLoadImages() {
         lazyImages.forEach(img => observer.observe(img));
     }
 }
+/**
+ Handler: DOMContentLoaded event
+ Functionality: It will just check that when the all input fields is empty than it will disabled the search button, but whenever type any single word in any input field than it will enable the search button
+ */
 document.addEventListener('DOMContentLoaded', function () {
     const searchButton = document.getElementById('btn-search');
     const inputFields = document.querySelectorAll('input[type="text"]');
@@ -246,6 +250,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     checkInputs();
 });
+/**
+ Handler: load event
+ Functionality: It will just for loader when we load the DOM, than it will show us the loader until we found any data for display.
+ */
 window.addEventListener("load", function () {
     const loader = document.querySelector(".loader");
     loader.classList.add("loader-hidden");
